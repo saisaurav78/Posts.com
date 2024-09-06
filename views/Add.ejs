@@ -1,0 +1,27 @@
+<%- include("includes/head.ejs") %>
+<body>
+    <%- include("partials/navbar.ejs") %>
+    <div class="container-fluid form_container">
+        <h1>Add a Post</h1>
+        <p>Your Post is valuable to us</p>
+        <form action="/add" class="form-group" method="post" enctype="multipart/form-data">
+            <label class="form-label" for="title">Title</label>
+            <input type="text" name="title" id="title" class="form-control" required>
+
+            <label class="form-label" for="category">Category</label>
+            <input type="text" name="category" id="category" class="form-control" required>
+
+            <label class="form-label" for="content">What's on your mind?</label>
+            <textarea name="content" cols="50" rows="10" id="content" class="form-control" required></textarea>
+
+            <label class="form-label" style="display: inline-block;" for="image">Image:</label>
+            <i class="bi bi-image"></i>
+            <input class="form-control" type="file" name="image" id="image" accept="image/*">
+            
+            <button style="display:block; margin: 5% auto;" type="submit" class="btn btn-success" id="submitBtn">Add</button>
+        </form>
+    </div>
+    <%- include("includes/footer.ejs") %>
+    <script src="/script.js"></script>
+</body>
+

@@ -1,0 +1,50 @@
+ <%- include("includes/head.ejs") %>
+<body>
+  <%- include("partials/navbar.ejs") %>
+  <div class="container mt-5 bg-light" id="dashboard">
+    <% if (msg) { %>
+      <span class="valid-feedback" style="display: block" id="success"> <h1> <%= msg %></h1></span>
+    <% } %>
+    
+   <% if (user) { %>
+  <div style="text-align: center;">
+    <h1><%= user.user %></h1>
+    <h2>User ID: <%= user.userId %></h2>
+    <img src="/uploads/<%= user.profileImg %>" alt="User Profile Image" style="width: 100px; height: 100px; border-radius: 50%; margin-top: 10px;">
+  </div>
+    <% } else { %>
+      <h1>Login</h1>
+    <% } %>
+    <form action="/update-profile" class="form-group" method="post">
+      <div class="form-group">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" placeholder="username" class="form-control" required name="username" id="username" value="<%= user ? user.user : '' %>">
+        <br>
+
+        <label for="password" class="form-label">Old Password</label>
+        <input type="password" required placeholder="Enter old password" class="form-control" name="password" id="password" value="*****">
+        <br>
+
+        <label for="newpass" class="form-label">Change Password</label>
+        <input type="password" placeholder="Enter new password" class="form-control" required name="newpassword" id="newpass" value="">
+        <br>
+
+        <label for="cnfmpass" class="form-label">Confirm New Password</label>
+        <input type="password" placeholder="Confirm new password" class="form-control" required id="cnfmpass" value="">
+        <br>
+
+        <span class="invalid-feedback" id="msg">Message</span>
+        <br>
+
+        <div class="d-flex align-items-center">
+          <button type="submit" onclick="checkPasswords(event)" id="save" class="btn btn-primary me-5">Save</button>
+        </div>
+        <br>
+      </div>
+    </form>
+  </div>
+
+  <%- include("includes/footer.ejs") %>
+<script src="/script.js"></script>
+</body>
+</html>

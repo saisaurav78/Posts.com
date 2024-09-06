@@ -1,0 +1,74 @@
+<%-include("includes/head.ejs")  %>
+<body>
+        <%- include("partials/navbar.ejs") %>
+    <div class="container mt-5" style="width: fit-content;" id="loginContainer" >
+        <%if (user) {%>
+            <h1>welcome <%=user.user%></h1>
+      <%  } else {%>
+        <h1>Login</h1>
+      <%}%>
+    <%if(failure){%>
+          <div class="alert alert-danger">
+            <%=failure%>
+          </div>
+  <%  }%>
+    <form action="/login" method="post">
+        <div class="form-group">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" placeholder="Username" class="form-control" required name="username" id="username" value=
+            <% if (user) { %>
+                <%=user.user%>
+            <% } %>>
+            <br>
+            <label for="password"  class="form-label">Password</label>
+            <input type="password" placeholder="Password" class="form-control" required name="password" id="password">
+            <br>
+            <div class="form-check">
+          <input class="form-check-input"  required checked type="checkbox" name="checkbox" id="checkbox">
+            <label for="checkbox" class="form-check-label">Remember me</label>
+            </div>
+            <span class="d-flex align-items-center">
+                 <a role="button" onclick="OpenPasswordModal()" class="ms-2">forgot password</a>
+            </span>
+            <br>
+            <div class="d-flex align-items-center">
+                <button type="submit" class="btn btn-primary me-5">Login</button>
+                    <h4 class="mb-0">Don't have an account ?</h4>
+                    <a href="/login/register/" class="ms-2">Register here</a>
+            </div>
+        </div>
+        </form>
+    </div>
+    <div class="resetPasswordOuterModal" id="passwordModal">
+        <div class="container-fluid ResetPasswordInnerModal"> 
+            <h1>Reset Password</h1>
+            <span class="ModalCloseBtn" onclick="ClosePasswordModal()">
+                <i class="bi bi-x fs-1"></i>
+            </span>
+            <div class="container container-fluid">
+                <form action="" class="form-group">
+                <label for="form-label">Enter security answer</label>
+                <input type="text" class="form-control" placeholder="security answer"> 
+                <button type="submit" class="btn btn-success" name="" id="">Submit</button>
+            </form>
+            </div>
+        </div>
+    </div>
+    <%-include("includes/footer.ejs")  %>
+    <script src="/script.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded' ,()=>{
+            const passwordModal= document.getElementById("passwordModal")
+            passwordModal.classList.add("ClosePasswordModal")
+        });
+        function OpenPasswordModal(){
+            const passwordModal= document.getElementById("passwordModal")
+            passwordModal.classList.remove('ClosePasswordModal')
+        }
+        function ClosePasswordModal(){
+            const passwordModal= document.getElementById("passwordModal")
+            passwordModal.classList.add('ClosePasswordModal')
+        }
+    </script>
+</body>
+</html>

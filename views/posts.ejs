@@ -1,0 +1,38 @@
+<%- include("includes/head.ejs") %>
+    <body>
+        <%- include("partials/navbar.ejs") %>
+        <section class="container-fluid post_container">
+            <% if (posts.length === 0) { %>
+                <h3 style="text-align: center; margin: 10% auto;">No Posts Found, Try adding something...</h3>
+            <% } %>
+            <% for (const post of posts) { %>
+                <div class="card" id="post_card">
+                    <a href="/show/<%=post.Id%>" style="text-decoration: none;color: inherit;"> 
+                    <img class="card-img-top" id="post_card_img" src="/uploads/<%= post.img %>" alt="No image">
+                     <div class="post_card_title">
+                        <h3><em>Title:<%=post.title%></em></h3>
+                    </div> 
+                    <div class="post_card_category">
+                             <div style="background-color: cadetblue; width: max-content;"> <h5>@category: <%= post.category %>
+                            </h5></div>
+                    </div>
+                    <span class="post_card_time">
+                    <h6><em>posted: <%=post.createdAt.toString().slice(0,15)%></em></h6>
+                    </span>
+                    <% if (user && post.userId=== user.userId) { %>
+                         <div role="group" id="post_card_btns">
+                        <a href="/edit/<%= post.Id %>" class="btn btn-dark "> Edit</a>
+                        <form action="/delete/<%=post.Id%>?_method=DELETE" method="post">
+                             <button onclick="return confirm('are you sure, want to delete?')" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div> 
+                    <% } %>
+                </div>
+                </a>
+                
+            <% } %>
+        </div>
+        <%- include("includes/footer.ejs") %>
+        <script src="/script.js"></script>
+    </body>
+</html>

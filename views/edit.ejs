@@ -1,0 +1,31 @@
+<%-include("includes/head.ejs") %>
+<body>
+        <header>
+            <h1 style="text-align: center;">Welcome to Posts.com</h1>
+              <a class="icon-link icon-link-hover fs-5" style="margin:1rem;" href="/posts/">
+                Back<i class="bi bi-box-arrow-left"></i>
+             </a> 
+        </header>
+    <div class="form_container">
+        <h1>Edit Post</h1>
+    <form action="/submit/<%=post.Id%>?_method=PATCH" method="post" enctype="multipart/form-data">
+        <label for="Id">Id:</label>
+        <input class="form-control" type="text" name="user" id="Id"  disabled value="<%=post.Id %>" required>
+        <label for="Id">title</label>
+        <input class="form-control" type="text" name="title" id="title" value="<%=post.title %>" required>
+
+        <label for="category">Category</label>
+        <input class="form-control" type="text" name="category" id="category" value="<%=post.category %>" required>
+        
+        <label for="content">What's on your mind?</label>
+        <textarea  class="form-control" name="content" cols="50" rows="10" id="content" required><%=post.content%></textarea>
+
+      <label  for="image">image:</label>  
+      <input class="form-control" type="file" name="image" id="image" accept="image/*">
+        <button type="submit" class="btn btn-success" id="submitBtn">Submit</button>
+    </form>
+       </div>
+       <%-include("includes/footer.ejs")  %>
+       <script src="/script.js"></script>
+  </body>
+</html>

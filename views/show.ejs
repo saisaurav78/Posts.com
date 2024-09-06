@@ -1,0 +1,42 @@
+<%- include("includes/head.ejs") %>
+  <body>
+    <%- include("partials/navbar.ejs") %>
+    <section class="container mt-5" id="full_post">
+      <div class="card-img-top" id="full_post_img">
+        <img class="img-fluid img-rounded post_img" src="/uploads/<%= post.img %>" alt="Post image" title="Post image">
+      </div>
+      <h3>Title: <strong><%= post.title %></strong></h3>
+      <span><h4>Author: <em>@<%= post.userName %></em></h4></span>
+      <p>Updated:<%= post.updatedAt %></p>
+      <pre><%= post.content %></pre>
+    </section>
+
+    <section class="container mt-5" id="comments" style="width: 40%; height: max-content;">
+      <form action="/comment/<%= post.Id %>" method="post" class="form-group comment-form">
+        <label class="form-label" for="comment"><h5><em>Add a comment</em></h5></label>
+        <textarea name="comment" id="comment" class="form-control" required placeholder="What do you think?"></textarea>
+        <button type="submit" class="btn btn-success mt-2 ml-5" id="submitBtn">Post</button>
+      </form>
+    </section>
+
+    <section class="container mt-3" id="comments" style="width: 40%;">
+      <h3>Comments (<%=comments.length  %>)</h3>
+      <% if (comments && comments.length > 0) { %>
+        <% comments.forEach(comment => { %>
+          <div class="alert alert-info">
+            <h6><%= comment.created_at.toString().slice(0, 24) %></h6>
+            <span>
+              <h6><em>@<%= comment.userName %></em></h6>
+              <h5><strong><%= comment.comment %></strong></h5>
+            </span>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <h5 class="alert alert-info">No comments available</h5>
+      <% } %>
+    </section>
+
+    <%- include("includes/footer.ejs") %>
+    <script src="/script.js"></script>
+  </body>
+</html>

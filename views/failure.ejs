@@ -1,0 +1,23 @@
+<%-include("includes/head.ejs")  %>
+<body>
+  <div class="container mt-5">
+      <h1 class="bg-danger"> An Error occured in the process</h1>
+      <h2><%=failure%></h2>
+    <p class="bg-light">You will be redirected to Posts.com in <span id="timer">3</span>
+    </p>
+  </div>
+  <%-include("includes/footer.ejs")  %>
+  <script>
+    let count=3;
+    const interval= setInterval(() => {
+      count--
+      document.getElementById("timer").innerText=count
+      if(count<=0){
+        clearInterval(interval);
+        window.location.href="/posts"
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
+
