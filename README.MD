@@ -14,10 +14,10 @@ Posts.com is a simple and user-friendly blog application where users can registe
 ![User Dashboard](public/screenshots/Register.png)
 
 ### Post Creation
-![Post Creation](public/screenshots/Add Post.png)
+![Post Creation](public/screenshots/AddPost.png)
 
 ### Post Detailed
-![Post Creation](public/screenshots/Post Detail.png)
+![Post Creation](public/screenshots/PostDetailed.png)
 
 ### Comments
 ![Post Creation](public/screenshots/Comments.png)
