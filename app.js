@@ -53,7 +53,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 app.get("/add", isAuthenticated, (req, res) => {
-  res.render("add.ejs", {user:req.user});
+  res.render("add",{user:req.user});
 });
 
 app.post("/add", isAuthenticated, upload.single("image"), async (req, res) => {
@@ -86,12 +86,12 @@ app.get(["/", "/home", "/posts"], (req, res) => {
     }
     if (token) {
       jwt.verify(token, process.env.JWT_SECRET, (jwterr, jwtdecoded) => {
-        if(jwterr) res.render("posts.ejs",{posts:queryResult, user:null})
-        return res.render("posts.ejs", { posts: queryResult, user:jwtdecoded });
+        if(jwterr) res.render("posts",{posts:queryResult, user:null})
+        return res.render("posts", { posts: queryResult, user:jwtdecoded });
       })
     }
     else {
-      return res.render("posts.ejs", { posts: queryResult, user: null });
+      return res.render("posts", { posts: queryResult, user: null });
     }
  
   });
@@ -111,25 +111,25 @@ app.get("/detail/:user",  (req, res) => {
     connection.query(commentsQuery, [Id], (commentFetchErr, commentFetchRes) => {
       if (commentFetchErr) {
         console.log(commentFetchErr);
-        return res.render("detail.ejs", { post: postResult[0], comments: null });
+        return res.render("detail", { post: postResult[0], comments: null });
       }
       if (token) {
         jwt.verify(token, process.env.JWT_SECRET, (jwtErr, jwtDecoded) => {
           if (jwtErr) {
-            return res.render("detail.ejs", {
+            return res.render("detail", {
               post: postResult[0],
               comments: commentFetchRes,
               user: null
             });
           }
-          res.render("detail.ejs", {
+          res.render("detail", {
             post: postResult[0],
             comments: commentFetchRes,
             user: jwtDecoded
           });
         });
       } else {
-        res.render("detail.ejs", {
+        res.render("detail", {
           post: postResult[0],
           comments: commentFetchRes,
           user: null
@@ -219,7 +219,7 @@ app.post("/comment/:id", isAuthenticated, (req, res) => {
           connection.query(fetchCommentsQuery, [post_id], (fetchCommentsErr, fetchCommentsRes) => {
             if (fetchCommentsErr) throw fetchCommentsErr;
 
-            res.render("detail.ejs", {
+            res.render("detail", {
               post: fetchPostRes[0],
               comments: fetchCommentsRes,
               user:req.user
@@ -242,18 +242,18 @@ app.post("/login", (req, res) => {
   connection.query(query, [username], (err, result) => {
     if (err) {
       console.log(err);
-      return res.render("login.ejs", {user:null, failure: err.message });
+      return res.render("login", {user:null, failure: err.message });
     }
     if (result.length === 0)
-      return res.render("login.ejs", { user:null,failure: "Account doesnot exist" });
+      return res.render("login", { user:null,failure: "Account doesnot exist" });
     const hashedpass = result[0].password;
     bcrypt.compare(password, hashedpass, (bcrypterr, isMatch) => {
       if (bcrypterr) {
         console.error(bcrypterr);
-        return res.render("login.ejs", {user:null, failure: bcrypterr });
+        return res.render("login", {user:null, failure: bcrypterr });
       }
       if (!isMatch) {
-        return res.render("login.ejs", {
+        return res.render("login", {
           user:null,
           failure: "Invalid username or password"
         });
@@ -297,7 +297,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get(["/dashboard","/update-profile"], isAuthenticated, (req, res) => {
-  return res.render("dashboard.ejs",{user:req.user, msg:null})
+  return res.render("dashboard",{user:req.user, msg:null})
 });
 
 app.post("/update-profile", isAuthenticated, upload.single('profileImg'), async (req, res) => {
@@ -305,16 +305,16 @@ app.post("/update-profile", isAuthenticated, upload.single('profileImg'), async 
   const userId = req.user.userId;
   const profileImg = req.file ? await UploadImg(req.file.buffer): null;
   if (!cnfmpass && !profileImg) {
-    return res.render("dashboard.ejs", { user: req.user, msg: 'No data updated' });
+    return res.render("dashboard", { user: req.user, msg: 'No data updated' });
   }
 
   if (profileImg && !cnfmpass) {
     const query = 'UPDATE userdata SET profileImg=? WHERE userId=?';
     connection.query(query, [profileImg, userId], (queryErr) => {
       if (queryErr) {
-        return res.render('dashboard.ejs', { user: req.user, msg: 'Failed to update profile image: ' + queryErr.code });
+        return res.render('dashboard', { user: req.user, msg: 'Failed to update profile image: ' + queryErr.code });
       }
-    res.render('dashboard.ejs', { user: req.user, msg: 'Profile image updated successfully' });
+    res.render('dashboard', { user: req.user, msg: 'Profile image updated successfully' });
 
     });
   }
@@ -322,14 +322,14 @@ app.post("/update-profile", isAuthenticated, upload.single('profileImg'), async 
   else if (!profileImg && cnfmpass) {
     bcrypt.hash(cnfmpass, 10, (bcrypterr, hashedPassword) => {
       if (bcrypterr) {
-        return res.render('dashboard.ejs', { user: req.user, msg: 'An error occurred: ' + bcrypterr.message });
+        return res.render('dashboard', { user: req.user, msg: 'An error occurred: ' + bcrypterr.message });
       }
       const query = 'UPDATE userdata SET password=? WHERE userId=?';
       connection.query(query, [hashedPassword, userId], (queryErr) => {
         if (queryErr) {
-          return res.render('dashboard.ejs', { user: req.user, msg: 'Failed to update password: ' + queryErr.message });
+          return res.render('dashboard', { user: req.user, msg: 'Failed to update password: ' + queryErr.message });
         }
-        return res.render('dashboard.ejs', { user: req.user, msg: 'Password updated successfully' });
+        return res.render('dashboard', { user: req.user, msg: 'Password updated successfully' });
       });
     });
   }
@@ -337,14 +337,14 @@ app.post("/update-profile", isAuthenticated, upload.single('profileImg'), async 
   else {
     bcrypt.hash(cnfmpass, 10, (bcrypterr, hashedPassword) => {
       if (bcrypterr) {
-        return res.render('dashboard.ejs', { user: req.user, msg: 'An error occurred: ' + bcrypterr.message });
+        return res.render('dashboard', { user: req.user, msg: 'An error occurred: ' + bcrypterr.message });
       }
       const query = 'UPDATE userdata SET profileImg=?, password=? WHERE userId=?';
       connection.query(query, [profileImg, hashedPassword, userId], (queryErr) => {
         if (queryErr) {
-          return res.render('dashboard.ejs', { user: req.user, msg: 'Failed to update: ' + queryErr.message });
+          return res.render('dashboard', { user: req.user, msg: 'Failed to update: ' + queryErr.message });
         }
-        return res.render('dashboard.ejs', { user: req.user, msg: 'ProfileImg and password updated successfully' });
+        return res.render('dashboard', { user: req.user, msg: 'ProfileImg and password updated successfully' });
       });
     });
   }
@@ -374,9 +374,9 @@ app.get("/login/register/", (req, res) => {
   connection.query(query, (queryErr, queryResult) => {
     if (queryErr) {
       console.error(queryErr);
-      return res.render("register.ejs", { validation: queryErr.errno, user: null });
+      return res.render("register", { validation: queryErr.errno, user: null });
     }
-    res.render("register.ejs", { validation: null, user: null });
+    res.render("register", { validation: null, user: null });
   });
 });
 
@@ -402,14 +402,14 @@ app.post("/register", upload.single("profileImg"), async (req, res) => {
         console.error(queryErr);
         return res.render("failure.ejs", { failure: queryErr.message });
       }
-      res.render("success.ejs");
+      res.render("success");
     });
   });
 });
 
 app.get("/logout", isAuthenticated, (req, res) => {
   res.clearCookie("token")
-  res.redirect("posts.ejs")
+  res.redirect("posts")
 })
 
 app.listen(port, () => {
