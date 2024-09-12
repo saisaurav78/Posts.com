@@ -53,7 +53,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 app.get("/add", isAuthenticated, (req, res) => {
-  res.render("add",{user:req.user});
+  res.render("Add.ejs",{user:req.user});
 });
 
 app.post("/add", isAuthenticated, upload.single("image"), async (req, res) => {
