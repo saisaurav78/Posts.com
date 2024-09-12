@@ -1,7 +1,7 @@
 <%-include("includes/head.ejs")  %>
 <body>
         <%- include("partials/navbar.ejs") %>
-    <div class="container mt-5" style="width: fit-content;" id="loginContainer" >
+    <div class="container mt-5" style="width: 511px;" id="loginContainer" >
         <%if (user) {%>
             <h1>welcome <%=user.user%></h1>
       <%  } else {%>
@@ -31,15 +31,15 @@
                  <a role="button" onclick="OpenPasswordModal()" class="ms-2">forgot password</a>
             </span>
             <br>
-            <div class="d-flex align-items-center">
+            <div class="container-fluid">
                 <button type="submit" class="btn btn-primary me-5">Login</button>
                     <h4 class="mb-0">Don't have an account ?</h4>
-                    <a href="/login/register/" class="ms-2">Register here</a>
+                   <h5> <a href="/login/register/" class="ms-2">Register here</a></h5>
             </div>
         </div>
         </form>
     </div>
-    <div class="resetPasswordOuterModal" id="passwordModal">
+    <div class="resetPasswordOuterModal" id="hidden">
         <div class="container-fluid ResetPasswordInnerModal"> 
             <h1>Reset Password</h1>
             <span class="ModalCloseBtn" onclick="ClosePasswordModal()">
@@ -57,18 +57,6 @@
     <%-include("includes/footer.ejs")  %>
     <script src="/script.js"></script>
     <script>
-       document.addEventListener('DOMContentLoaded' ,()=>{
-            const passwordModal= document.getElementById("passwordModal")
-            passwordModal.classList.add("ClosePasswordModal")
-        });
-        function OpenPasswordModal(){
-            const passwordModal= document.getElementById("passwordModal")
-            passwordModal.classList.remove('ClosePasswordModal')
-        }
-        function ClosePasswordModal(){
-            const passwordModal= document.getElementById("passwordModal")
-            passwordModal.classList.add('ClosePasswordModal')
-        }
     </script>
 </body>
 </html>

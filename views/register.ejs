@@ -1,7 +1,7 @@
 <%- include("includes/head.ejs") %>
   <body>
     <%- include("partials/navbar.ejs") %>
-    <div class="container mt-5" style="width: fit-content;" id="registerContainer">
+    <div class="container mt-5" id="registerContainer" style="width: 502px;">
       <h1>Register</h1>
       <% if (validation) { %>
         <div class="alert alert-danger" id="validation-check" role="alert">
@@ -40,10 +40,10 @@
               I agree to all terms and conditions</label>
           </div>
 
-          <div class="d-flex align-items-center mt-3">
+          <div class="container-fluid">
             <button type="submit" class="btn btn-primary me-5" onclick="checkPasswords(event)">Register</button>
             <h4 class="mb-0">Already have an Account?</h4>
-            <a href="/login/" class="ms-2">Login</a>
+           <h5> <a href="/login/" class="ms-2">Login</a></h5>
           </div>
         </div>
       </form>

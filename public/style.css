@@ -113,6 +113,9 @@ footer {
   text-wrap: balance;
 }
 @media (max-width:700px){
+ #loginContainer, #registerContainer{
+    max-width: 90%;
+  }
   #post_card{
    min-width: 90%;
     margin: 0 auto;
@@ -150,12 +153,14 @@ footer {
   text-align: center;
 }
 #full_post pre{
-  width: 100%;
-  text-wrap:stable;
-  font-size: larger;
+  margin: 0 auto;
+  width: 85%;
+  text-wrap:wrap;
+ text-rendering: optimizeSpeed;
+  font-size: 1.5rem;
   font-family: 'Roboto',sans-serif;
   overflow: hidden;
-  font-weight: 500;
+  /* font-weight: 500; */
 }
 #full_post img{
   width: 40%;
@@ -179,7 +184,7 @@ width: 100%;
 
 .resetPasswordOuterModal {
   width: 100%;
-  height: 100%;
+  height: 120%;
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 0;
@@ -223,13 +228,13 @@ width: 100%;
   cursor: pointer;
 }
 
-.ClosePasswordModal {
-  display: none;
-}
-
 .userProfileImg{
   width: 120px;
   height: 120px;
   border-radius: 50%;
   margin-top: 10px;
+}
+
+#hidden{
+display: none;
 }

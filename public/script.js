@@ -36,6 +36,13 @@ navitem.forEach(item => {
 
 //Login page script--------------------------------------------------------------------------
 // 
+const passwordModal = document.querySelector(".resetPasswordOuterModal")
+function OpenPasswordModal() {
+    passwordModal.id = ""
+}
+function ClosePasswordModal() {
+    passwordModal.id = 'hidden'
+}
 
 //-------------------------------------------------------------------------------------------
 //Registration page script-------------------------------------------------------------------
