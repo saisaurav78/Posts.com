@@ -3,11 +3,11 @@
     <%- include("partials/navbar.ejs") %>
     <section class="container mt-5" id="full_post">
       <div class="card-img-top" id="full_post_img">
-        <img class="img-fluid img-rounded post_img" src="/uploads/<%= post.img %>" alt="Post image" title="Post image">
+        <img class="img-fluid img-rounded post_img" src="<%= post.img %>" alt="Post image" title="Post image">
       </div>
       <h3>Title: <strong><%= post.title %></strong></h3>
       <span><h4>Author: <em>@<%= post.userName %></em></h4></span>
-      <p>Updated:<%= post.updatedAt %></p>
+      <p>Last-Updated:<%= post.updatedAt%></p>
       <pre><%= post.content %></pre>
     </section>
 
@@ -25,10 +25,8 @@
         <% comments.forEach(comment => { %>
           <div class="alert alert-info">
             <h6><%= comment.created_at.toString().slice(0, 24) %></h6>
-            <span>
               <h6><em>@<%= comment.userName %></em></h6>
               <h5><strong><%= comment.comment %></strong></h5>
-            </span>
           </div>
         <% }) %>
       <% } else { %>

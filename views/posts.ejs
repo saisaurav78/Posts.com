@@ -7,14 +7,15 @@
             <% } %>
             <% for (const post of posts) { %>
                 <div class="card" id="post_card">
-                    <a href="/show/<%=post.Id%>" style="text-decoration: none;color: inherit;"> 
-                    <img class="card-img-top" id="post_card_img" src="/uploads/<%= post.img %>" alt="No image">
+                    <a href="/detail/<%=post.Id%>" style="text-decoration: none;color: inherit;"> 
+                    <img class="card-img-top" id="post_card_img" src="<%= post.img %>" alt="No image">
                      <div class="post_card_title">
                         <h3><em>Title:<%=post.title%></em></h3>
                     </div> 
                     <div class="post_card_category">
-                             <div style="background-color: cadetblue; width: max-content;"> <h5>@category: <%= post.category %>
-                            </h5></div>
+                    <div style="background-color: #198754; color:#fff; width: max-content;"> <h5>@category: <%= post.category %>
+                     </h5>
+                    </div>
                     </div>
                     <span class="post_card_time">
                     <h6><em>posted: <%=post.createdAt.toString().slice(0,15)%></em></h6>

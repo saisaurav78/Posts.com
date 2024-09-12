@@ -48,31 +48,38 @@ Posts.com is a simple and user-friendly blog application where users can registe
     git clone https://github.com/your-username/Posts.com.git
     ```
 
-2. Install the dependencies:
+2. Install the dependencies: 
     ```bash
     cd Posts.com
     npm install
     ```
-
 3. Set up environment variables:
     - Create a `.env` file in the root directory.
-    - Add your MySQL database URL, JWT secret, and other necessary environment variables as shown below:
-        ```bash
-        DB_HOST
-        DB_PORT
-        DB_NAME
-        DB_USER
-        DB_PASS
-        PORT=3001
-        SECRET_KEY
-        ```
+    - Add your PORT, MySQL database URL, JWT secret, and other necessary environment variables as shown below:
+```bash
+#Server Port
+PORT
 
+#JWT secret for authentication
+JWT_SECRET 
+
+# MySQL Database Configuration
+Host
+Db
+Db_PORT
+User
+Password
+
+# Cloudinary Configuration for image uploads
+Cloud_name
+API_key
+API_secret
+```
 4. Run the application:
     ```bash
     npm start
     ```
-
-5. Visit `http://localhost:3001` in your browser to view the application.
+5. Visit `http://localhost:${process.env.Port}` in your browser to view the application.
 
 ## Usage
 

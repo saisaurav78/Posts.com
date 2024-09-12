@@ -5,8 +5,10 @@ const cookieparser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
-const multer = require("multer");
+const upload = require("./utils/multer");
 const methodOverride = require("method-override");
+const UploadImg = require('./utils/cloudinary')
+
 
 app.use(cookieparser());
 app.use(express.urlencoded({ extended: true }));
@@ -19,16 +21,10 @@ app.use(express.static(path.join(__dirname, "public")));
 dotenv.config();
 const port = process.env.PORT || 3001;
 
-const mysql = require("mysql2");
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-});
-connection.connect((err) => {
-  if (err) throw err;
+const connection = require("./config/config")
+
+ connection.connect((err) => {
+  if (err) console.log(err);
   console.log("connected to db");
 });
 
@@ -42,7 +38,7 @@ const isAuthenticated = (req, res, next) => {
   }
   if (token)
   {
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         return res.redirect("/login");
       }
@@ -51,38 +47,24 @@ const isAuthenticated = (req, res, next) => {
     });
   }
   else {
-    next()
     req.user=null
+    next()
   }
 };
 
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    return cb(null, "./public/uploads/");
-  },
-  filename: function (req, file, cb) {
-    return cb(null, `${file.originalname}`);
-  },
-});
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 1024 * 1024 * 2,
-  },
-});
-
 app.get("/add", isAuthenticated, (req, res) => {
-  res.render("Add",{user:req.user});
+  res.render("add",{user:req.user});
 });
 
-app.post("/add", isAuthenticated, upload.single("image"), (req, res) => {
+app.post("/add", isAuthenticated, upload.single("image"), async (req, res) => {
   const userId= req.user?req.user.userId:null
   let { title, category, content } = req.body
-  const img = req.file ? req.file.filename : null;
+  const ImgUrl = req.file? await UploadImg(req.file.buffer):null
+  
   try {
     const query = "INSERT INTO userposts(userId, title,category, content,img) VALUES (?,?,?,?,?)";
-    connection.query(query, [userId,title,category, content, img], (err) => {
+    connection.query(query, [userId,title,category, content, ImgUrl], (err) => {
       if (err) {
         console.log(err.message);
         res.render("failure.ejs", { failure: err.message });
@@ -105,7 +87,7 @@ app.get(["/", "/home", "/posts"], (req, res) => {
       return res.render("failure.ejs", { failure: queryErr.message });
     }
     if (token) {
-      jwt.verify(token, process.env.SECRET_KEY, (jwterr, jwtdecoded) => {
+      jwt.verify(token, process.env.JWT_SECRET, (jwterr, jwtdecoded) => {
         if(jwterr) res.render("posts",{posts:queryResult, user:null})
         return res.render("posts", { posts: queryResult, user:jwtdecoded });
       })
@@ -116,7 +98,7 @@ app.get(["/", "/home", "/posts"], (req, res) => {
  
   });
 });
-app.get("/show/:user",  (req, res) => {
+app.get("/detail/:user",  (req, res) => {
   const token = req.cookies.token||null;
   const Id = parseInt(req.params.user, 10); 
 
@@ -131,27 +113,25 @@ app.get("/show/:user",  (req, res) => {
     connection.query(commentsQuery, [Id], (commentFetchErr, commentFetchRes) => {
       if (commentFetchErr) {
         console.log(commentFetchErr);
-        return res.render("show.ejs", { post: postResult[0], comments: null });
+        return res.render("detail", { post: postResult[0], comments: null });
       }
       if (token) {
-        jwt.verify(token, process.env.SECRET_KEY, (jwtErr, jwtDecoded) => {
+        jwt.verify(token, process.env.JWT_SECRET, (jwtErr, jwtDecoded) => {
           if (jwtErr) {
-            return res.render("show.ejs", {
+            return res.render("detail", {
               post: postResult[0],
               comments: commentFetchRes,
               user: null
             });
-          
           }
-
-          res.render("show.ejs", {
+          res.render("detail", {
             post: postResult[0],
             comments: commentFetchRes,
             user: jwtDecoded
           });
         });
       } else {
-        res.render("show.ejs", {
+        res.render("detail", {
           post: postResult[0],
           comments: commentFetchRes,
           user: null
@@ -179,11 +159,10 @@ app.get("/edit/:user", isAuthenticated, (req, res) => {
   }
 });
 
-app.patch("/submit/:user",isAuthenticated, upload.single("image"), (req, res) => {
+app.patch("/submit/:user",isAuthenticated, upload.single("image"), async (req, res) => {
     const Id = parseInt(req.params.user);
-    const newImg = req.file ? req.file.filename : "";
-  const{title,category,content}= req.body
-
+    const{title,category,content}= req.body
+    const newImg = req.file ? await UploadImg(req.file.buffer) : null
     const query = `UPDATE userposts SET title=? ,category=?, content = ?, img = ? WHERE Id = ?`;
 
     try {
@@ -242,7 +221,7 @@ app.post("/comment/:id", isAuthenticated, (req, res) => {
           connection.query(fetchCommentsQuery, [post_id], (fetchCommentsErr, fetchCommentsRes) => {
             if (fetchCommentsErr) throw fetchCommentsErr;
 
-            res.render("show.ejs", {
+            res.render("detail", {
               post: fetchPostRes[0],
               comments: fetchCommentsRes,
               user:req.user
@@ -286,7 +265,7 @@ app.post("/login", (req, res) => {
         user: result[0].username,
         profileImg: result[0].profileImg ? result[0].profileImg : "defaultProfile.jpg"
       };
-      jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" }, (jwtErr, Token) => {
+      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" }, (jwtErr, Token) => {
           if (jwtErr) {
             console.error(jwtErr);
             return res.render("failure.ejs", {user:null, failure: jwtErr.message });
@@ -307,7 +286,7 @@ app.post("/login", (req, res) => {
 
 app.get("/login", (req, res) => {
   if (req.cookies.token) {
-    jwt.verify(req.cookies.token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(req.cookies.token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         console.log(err);
         return res.render("login.ejs", { user: "" , failure:null});
@@ -319,22 +298,59 @@ app.get("/login", (req, res) => {
   }
 });
 
-app.get("/dashboard", isAuthenticated, (req, res) => {
+app.get(["/dashboard","/update-profile"], isAuthenticated, (req, res) => {
   return res.render("dashboard",{user:req.user, msg:null})
 });
 
-app.post("/update-profile", isAuthenticated, (req, res) => {
-  const { username, newpassword } = req.body
-  bcrypt.hash(newpassword, 10, (bcrypterr, hashedpass) => {
-    if (bcrypterr) return res.render("failure.ejs", { failure: bcrypterr.message }) 
+app.post("/update-profile", isAuthenticated, upload.single('profileImg'), async (req, res) => {
+  let cnfmpass  = req.body.cnfmpass
+  const userId = req.user.userId;
+  const profileImg = req.file ? await UploadImg(req.file.buffer): null;
+  if (!cnfmpass && !profileImg) {
+    return res.render("dashboard", { user: req.user, msg: 'No data updated' });
+  }
 
-  const query = 'UPDATE userdata SET username=? , password= ? where userId=?'
-  connection.query(query, [username, hashedpass, req.user.userId], (queryErr) => {
-    if (queryErr) return res.render("failure", { failure: queryErr.message })
-    res.render("dashboard", { user: req.user, msg: "updated successfully" })
-  })
-  })
-})
+  if (profileImg && !cnfmpass) {
+    const query = 'UPDATE userdata SET profileImg=? WHERE userId=?';
+    connection.query(query, [profileImg, userId], (queryErr) => {
+      if (queryErr) {
+        return res.render('dashboard', { user: req.user, msg: 'Failed to update profile image: ' + queryErr.code });
+      }
+    res.render('dashboard', { user: req.user, msg: 'Profile image updated successfully' });
+
+    });
+  }
+
+  else if (!profileImg && cnfmpass) {
+    bcrypt.hash(cnfmpass, 10, (bcrypterr, hashedPassword) => {
+      if (bcrypterr) {
+        return res.render('dashboard', { user: req.user, msg: 'An error occurred: ' + bcrypterr.message });
+      }
+      const query = 'UPDATE userdata SET password=? WHERE userId=?';
+      connection.query(query, [hashedPassword, userId], (queryErr) => {
+        if (queryErr) {
+          return res.render('dashboard', { user: req.user, msg: 'Failed to update password: ' + queryErr.message });
+        }
+        return res.render('dashboard', { user: req.user, msg: 'Password updated successfully' });
+      });
+    });
+  }
+
+  else {
+    bcrypt.hash(cnfmpass, 10, (bcrypterr, hashedPassword) => {
+      if (bcrypterr) {
+        return res.render('dashboard', { user: req.user, msg: 'An error occurred: ' + bcrypterr.message });
+      }
+      const query = 'UPDATE userdata SET profileImg=?, password=? WHERE userId=?';
+      connection.query(query, [profileImg, hashedPassword, userId], (queryErr) => {
+        if (queryErr) {
+          return res.render('dashboard', { user: req.user, msg: 'Failed to update: ' + queryErr.message });
+        }
+        return res.render('dashboard', { user: req.user, msg: 'ProfileImg and password updated successfully' });
+      });
+    });
+  }
+});
 
 
 app.post("/search", isAuthenticated, (req, res) => {
@@ -366,8 +382,8 @@ app.get("/login/register/", (req, res) => {
   });
 });
 
-app.post("/register", upload.single("profileImg"), (req, res) => {
-  const profileImg = req.file ? req.file.filename : null;
+app.post("/register", upload.single("profileImg"), async (req, res) => {
+  const profileImg = req.file ? await UploadImg(req.file.buffer) : null;
   const username = req.body.username
   let password = req.body.password
   const secret_answer= req.body.secret_answer
@@ -378,7 +394,6 @@ app.post("/register", upload.single("profileImg"), (req, res) => {
       return res.render("failure.ejs", { failure: bcrypterr.message });
     }
     password = bcryptres;
-    console.log('hashed pass is',password)
     const query = `INSERT INTO userdata(username, password, secret_answer, profileImg) VALUES (?, ?, ?, ?)`;
 
     connection.query(query, [username, password, secret_answer, profileImg], (queryErr) => {
