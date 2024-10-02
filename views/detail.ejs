@@ -1,21 +1,21 @@
 <%- include("includes/head.ejs") %>
   <body>
     <%- include("partials/navbar.ejs") %>
-    <section class="container mt-5" id="full_post">
+    <section class="container mt-5 p-2" id="full_post">
+      <h3 class="full_post_title"><%= post.title %></h3> 
       <div class="card-img-top" id="full_post_img">
-        <img class="img-fluid img-rounded post_img" src="<%= post.img %>" alt="Post image" title="Post image">
+        <img class="img-fluid w-50" src="<%= post.img %>" alt="Post image" title="Post image">
       </div>
-      <h3>Title: <strong><%= post.title %></strong></h3>
-      <span><h4>Author: <em>@<%= post.userName %></em></h4></span>
+      <div class="mt-3"><h5>Author: <em>@<%= post.userName %></em></h5></div>
       <p>LastUpdate:<%= post.updatedAt%></p>
-      <pre><%= post.content %></pre>
+      <div class="m-auto w-60 text-lg-center"><pre><%= post.content %></pre></div>
     </section>
 
     <section class="container mt-5" id="comments" style="width: 40%; height: max-content;">
       <form action="/comment/<%= post.Id %>" method="post" class="form-group comment-form">
         <label class="form-label" for="comment"><h5><em>Add a comment</em></h5></label>
         <textarea name="comment" id="comment" class="form-control" required placeholder="What do you think?"></textarea>
-        <button type="submit" class="btn btn-success mt-2 ml-5" id="submitBtn">Post</button>
+        <button type="submit" class="btn btn-success mt-0 ml-5" id="submitBtn">Post</button>
       </form>
     </section>
 
@@ -23,10 +23,10 @@
       <h3>Comments (<%=comments.length  %>)</h3>
       <% if (comments && comments.length > 0) { %>
         <% comments.forEach(comment => { %>
-          <div class="alert alert-info">
+          <div class="alert alert-info" 
             <h6><%= comment.created_at.toString().slice(0, 24) %></h6>
               <h6><em>@<%= comment.userName %></em></h6>
-              <h5><strong><%= comment.comment %></strong></h5>
+              <h5><%= comment.comment %></h5>
           </div>
         <% }) %>
       <% } else { %>

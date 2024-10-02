@@ -1,25 +1,21 @@
 <%- include("includes/head.ejs") %>
     <body>
         <%- include("partials/navbar.ejs") %>
-        <section class="container-fluid post_container">
+        <div class="container m-auto p-lg-2 d-flex row-gap-3  flex-sm-column flex-md-row flex-wrap justify-content-evenly">
             <% if (posts.length === 0) { %>
                 <h3 style="text-align: center; margin: 10% auto;">No Posts Found, Try adding something...</h3>
             <% } %>
             <% for (const post of posts) { %>
-                <div class="card" id="post_card">
-                    <a href="/detail/<%=post.Id%>" style="text-decoration: none;color: inherit;"> 
+                <div class="card p-2 m-auto mt-4 shadow-sm" id="post_card" >
                     <img class="card-img-top" id="post_card_img" src="<%= post.img %>" alt="No image">
-                     <div class="post_card_title">
-                        <h3><em>Title:<%=post.title%></em></h3>
-                    </div> 
-                    <div class="post_card_category">
-                    <div style="background-color: #198754; color:#fff; width: max-content;"> <h5>@category: <%= post.category %>
-                     </h5>
+                        <h3 class="card-title" style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;"><%=post.title%></h3>    
+                    <a href="/detail/<%=post.Id%>" style="text-decoration: none;color: inherit;"> 
+                        <button class="btn btn-link btn-md p-2 m-0">Continue Reading...</button>
+                           </a>
+                    <div class="container"> 
+                    <h5 class="bg-info-subtle bg-opacity-25">@category: <%= post.category %> </h5>
+                     <h5 class="bg-secondary-subtle bg-opacity-25 ">posted: <%=post.createdAt.toString().slice(0,15)%></h5>
                     </div>
-                    </div>
-                    <span class="post_card_time">
-                    <h6><em>posted: <%=post.createdAt.toString().slice(0,15)%></em></h6>
-                    </span>
                     <% if (user && post.userId=== user.userId) { %>
                          <div role="group" id="post_card_btns">
                         <a href="/edit/<%= post.Id %>" class="btn btn-dark "> Edit</a>
@@ -29,7 +25,6 @@
                     </div> 
                     <% } %>
                 </div>
-                </a>
                 
             <% } %>
         </div>

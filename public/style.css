@@ -24,7 +24,9 @@ body {
 }
 
 .nav-item.active .nav-link{
-  color: #198754;
+  text-underline-offset: 6px;
+  text-decoration:underline  #a4ddf1;
+  text-decoration-thickness: 5px;
 } 
 .navbar{
   font-weight: 550;
@@ -93,17 +95,10 @@ footer {
   width: 30%;
   height: max-content;
 }
-
-#post_card {
-  width:35%;
-  max-height: max-content !important;
-  text-align: left;
-  padding: 0.5rem; 
-  margin-left: 30%;
- box-shadow: 2px 4px 15px -4px rgba(0,0,0,0.45);
-}
-#post_card:hover{
-  opacity: 0.9;
+#post_card{
+min-width: 400px;
+ max-width: 400px; 
+ max-height: max-content;
 }
 #post_card_img{
   width: 220px; 
@@ -112,19 +107,22 @@ footer {
 #post_card_title h3{
   text-wrap: balance;
 }
-@media (max-width:700px){
+@media (max-width:700px)
+{
  #loginContainer, #registerContainer{
     max-width: 90%;
   }
   #post_card{
-   min-width: 90%;
+   min-width: 80% !important;
+   padding: 0;
     margin: 0 auto;
+    height: fit-content;
     max-height: fit-content !important;
   }
   #post_card_img{
   object-fit:contain;
-    width: 90%;
-    height: 60%;
+    width: 70%;
+    height: 30%;
   }
   #dashboard{
     width: 90%;
@@ -162,8 +160,15 @@ footer {
   overflow: hidden;
   /* font-weight: 500; */
 }
+/* #full_post_img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+} */
 #full_post img{
-  width: 40%;
+  width: 30%;
+  height: 30%;
 }
 #post_card_btns{
   display:inline-flex;
