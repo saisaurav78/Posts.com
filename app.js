@@ -78,7 +78,7 @@ app.post("/add", isAuthenticated, upload.single("image"), async (req, res) => {
 
 app.get(["/", "/home", "/posts"], (req, res) => {
   const token = req.cookies.token
-  const query = `SELECT * FROM userposts  ORDER BY createdAt`;
+  const query = `SELECT * FROM userposts  ORDER BY createdAt DESC`;
   connection.query(query, (queryErr, queryResult) => {
     if (queryErr) {
       console.error(queryErr);

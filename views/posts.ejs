@@ -9,12 +9,14 @@
                 <div class="card p-2 m-auto mt-4 shadow-sm" id="post_card" >
                     <img class="card-img-top" id="post_card_img" src="<%= post.img %>" alt="No image">
                         <h3 class="card-title" style="text-overflow:ellipsis;white-space: nowrap;overflow: hidden;"><%=post.title%></h3>    
-                    <a href="/detail/<%=post.Id%>" style="text-decoration: none;color: inherit;"> 
-                        <button class="btn btn-link btn-md p-2 m-0">Continue Reading...</button>
-                           </a>
-                    <div class="container"> 
-                    <h5 class="bg-info-subtle bg-opacity-25">@category: <%= post.category %> </h5>
-                     <h5 class="bg-secondary-subtle bg-opacity-25 ">posted: <%=post.createdAt.toString().slice(0,15)%></h5>
+                        <div class="d-flex justify-content-start align-items-start">
+                              <a href="/detail/<%= post.Id %>" class="pb-3 fs-6 text-decoration-none">
+                                   Read More...
+                              </a>
+                        </div>
+                    <div class="container d-flex flex-row justify-content-end"> 
+                    <span class="bg-info-subtle bg-opacity-25 text-capitalize text-light-emphasis mx-3"><%= post.category %> </span>
+                     <span class="bg-secondary-subtle bg-opacity-25 "><%=post.createdAt.toString().slice(0,15)%></span>
                     </div>
                     <% if (user && post.userId=== user.userId) { %>
                          <div role="group" id="post_card_btns">

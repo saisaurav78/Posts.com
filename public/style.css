@@ -12,6 +12,7 @@ body {
 }
 #searchForm{
   position: relative;
+  width: 15rem;
 }
 
 #searchBtn {
@@ -19,7 +20,7 @@ body {
   position: absolute;
   border-radius: 55%;
   bottom: 0;
-  margin-left: 9.5rem;
+  margin-left: 11rem;
   background: none;
 }
 
@@ -27,7 +28,7 @@ body {
   text-underline-offset: 6px;
   text-decoration:underline  #a4ddf1;
   text-decoration-thickness: 5px;
-} 
+}
 .navbar{
   font-weight: 550;
   font-size: large;
@@ -97,11 +98,11 @@ footer {
 }
 #post_card{
 min-width: 400px;
- max-width: 400px; 
+ max-width: 400px;
  max-height: max-content;
 }
 #post_card_img{
-  width: 220px; 
+  width: 220px;
    height: 220px;
 }
 #post_card_title h3{
@@ -131,6 +132,15 @@ min-width: 400px;
   #comments, #comments input{
     width: 90% !important;
   }
+  #full_post img{
+    width: 80% !important;
+  }
+  #full_post pre{
+  width: 90% !important;
+  text-wrap: balance !important;
+
+
+}
 }
 
 .post_container {
@@ -152,7 +162,7 @@ min-width: 400px;
 }
 #full_post pre{
   margin: 0 auto;
-  width: 85%;
+  width: 65%;
   text-wrap:wrap;
  text-rendering: optimizeSpeed;
   font-size: 1.5rem;
@@ -166,10 +176,10 @@ min-width: 400px;
   align-items: center;
   width: 100%;
 } */
-#full_post img{
+/* #full_post img{
   width: 30%;
   height: 30%;
-}
+} */
 #post_card_btns{
   display:inline-flex;
 }
@@ -197,14 +207,14 @@ width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1050; 
+  z-index: 1050;
 }
 
 .ResetPasswordInnerModal {
   width: 40%;
-  max-width: 500px; 
-  height: auto; 
-  max-height: 80vh; 
+  max-width: 500px;
+  height: auto;
+  max-height: 80vh;
   box-shadow: 6px 5px 12px -1px rgba(0, 0, 0, 0.56);
   border-radius: 10px;
   position: relative;
@@ -213,7 +223,7 @@ width: 100%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px; 
+  padding: 20px;
   text-align: center;
 }
 
