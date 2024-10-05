@@ -68,7 +68,7 @@ app.post("/add", isAuthenticated, upload.single("image"), async (req, res) => {
         console.log(err.message);
         res.render("failure.ejs", { failure: err.message });
       } else {
-        res.render("success.ejs", {user:req.user});
+        res.render("success.ejs", { user: req.user, redirect:"/posts" });
       }
     });
   } catch (error) { 
@@ -101,7 +101,7 @@ app.get("/detail/:user",  (req, res) => {
   const Id = parseInt(req.params.user, 10); 
 
   const postQuery = `SELECT * FROM userposts JOIN userdata ON userposts.userId=userdata.userId WHERE userposts.Id=?`;
-  const commentsQuery = `SELECT * FROM comments JOIN userdata ON comments.userId=userdata.userId WHERE post_id = ?`;
+  const commentsQuery = `SELECT * FROM comments JOIN userdata ON comments.userId=userdata.userId WHERE post_id = ? order by created_at DESC`;
 
   connection.query(postQuery, [Id], (postErr, postResult) => {
     if (postErr) {
@@ -168,7 +168,7 @@ app.patch("/submit/:user",isAuthenticated, upload.single("image"), async (req, r
         if (err) {
           return res.render("failure.ejs", { failure: err.message });
         }
-        res.render("success.ejs");
+        res.render("success.ejs", {redirect:"/posts"});
       });
     } catch (error) {
       console.log(error);
@@ -188,7 +188,7 @@ app.delete("/delete/:user", isAuthenticated, (req, res) => {
       if (err) {
         res.render("failure.ejs", { failure: err.message });
       } else {
-        res.render("success.ejs");
+        res.render("success.ejs", {redirect:"/posts"});
       }
     });
   } catch (error) {
@@ -219,10 +219,8 @@ app.post("/comment/:id", isAuthenticated, (req, res) => {
           connection.query(fetchCommentsQuery, [post_id], (fetchCommentsErr, fetchCommentsRes) => {
             if (fetchCommentsErr) throw fetchCommentsErr;
 
-            res.render("detail", {
-              post: fetchPostRes[0],
-              comments: fetchCommentsRes,
-              user:req.user
+            res.render("success", {
+           redirect:`/detail/${post_id}`
             });
           });
         });
@@ -274,7 +272,7 @@ app.post("/login", (req, res) => {
               maxAge: 3600000,
               sameSite: "strict",
             });
-            res.render("success.ejs");
+            res.render("success.ejs", {redirect:"/posts"});
           }
         }
       );
@@ -287,12 +285,12 @@ app.get("/login", (req, res) => {
     jwt.verify(req.cookies.token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         console.log(err);
-        return res.render("login.ejs", { user: "" , failure:null});
+        return res.render("login.ejs", { user: null , failure:null});
       }
       res.render("login.ejs", { user: decoded , failure:null});
     });
   } else {
-    res.render("login.ejs", { user: "" , failure:null});
+    res.render("login.ejs", { user: null , failure:null});
   }
 });
 
@@ -402,10 +400,29 @@ app.post("/register", upload.single("profileImg"), async (req, res) => {
         console.error(queryErr);
         return res.render("failure.ejs", { failure: queryErr.message });
       }
-      res.render("success");
+      res.render("success", { redirect:"/login"}) ;
     });
   });
 });
+
+app.get('/deletecomment/:post_id/:comment_id',isAuthenticated,  (req, res) => {
+  const post_id = parseInt(req.params.post_id);
+  const comment_id = parseInt(req.params.comment_id);
+  const query = 'delete comments from comments where comments.post_id=? and comments.id=?'
+  try {
+     connection.query(query, [post_id, comment_id], (queryErr) => {
+      if (queryErr) {
+        console.error(queryErr);
+        res.render('failure', { failure: queryErr });
+      }
+      res.render('success', { redirect: `/detail/${post_id}` });
+    });
+  
+} catch (error) {
+    console.error(error)
+    res.render("failure", {failure:error})
+}
+})
 
 app.get("/logout", isAuthenticated, (req, res) => {
   res.clearCookie("token")

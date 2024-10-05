@@ -16,7 +16,11 @@
       <form action="/comment/<%= post.Id %>" method="post" class="form-group comment-form">
         <label class="form-label" for="comment"><h5><em>Add a comment</em></h5></label>
         <textarea name="comment" id="comment" class="form-control" required placeholder="What do you think?"></textarea>
-        <button type="submit" class="btn btn-success mt-0 ml-5" id="submitBtn">Post</button>
+        <%if (!user) {%>
+           <a  class="btn btn-primary mt-0 ml-5"  href="/login">Sign in<a></a>
+       <% } else { %>
+          <button type="submit" class="btn btn-success mt-0 ml-5" id="submitBtn">Post</button>
+       <%}%>
       </form>
     </section>
 
@@ -27,7 +31,12 @@
           <div class="alert bg-info-subtle d-flex flex-column justify-content-center align-items-start" >
               <span><%= comment.created_at.toString().slice(0, 21) %></span>
               <span><em>@<%= comment.userName %></em></span>
-              <p class="mb-0 fs-5"><%= comment.comment %></p>
+              <p class="m-0 p-0 fs-5 fw-medium"><%= comment.comment %></p>
+                  <%if(user && comment.userName=== user.user) {%>
+                  <a onclick=" return confirm('You are deleting this comment, Are you sure?') " href="/deletecomment/<%=comment.post_id%>/<%=comment.id%>" class="m-0 p-0 align-self-end" role="button">
+                    <i class="fa-regular fa-trash-can fs-5 m-0 p-0 text-danger"></i>
+                  </a>
+              <%}%>
           </div>
         <% }) %>
       <% } else { %>

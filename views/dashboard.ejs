@@ -7,21 +7,21 @@
     <% } %>
     
     <% if (user) { %>
-      <div class="text-center">
-        <h1><%= user.user %></h1>
-        <h2>User ID: <%= user.userId %></h2>
-        <img src="<%= user.profileImg %>" alt="NoImage" class="userProfileImg">
+      <div class="text-center d-flex flex-column">
+        <span class="fs-3"><%= user.user %></span>
+        <span class="fs-3">User ID: <%= user.userId %></span>
+        <span class="fs-4"><img src="<%= user.profileImg %>" alt="NoImage" class="userProfileImg img-thumbnail"></span>
       </div>
     <% } else { %>
       <h1>Login</h1>
     <% } %>
-    
+    <br>
     <form action="/update-profile" enctype="multipart/form-data" class="form-group" 
     method="post" onsubmit="return checkPasswords()">
       <div class="form-group">
         <label class="custom-file-upload" for="profileImg">
-            Profile Image
-            <i class="bi bi-person-circle fs-3"></i>
+            Update Profile Image
+            <i class="bi bi-person-circle fs-2 mx-2"></i>
             <input type="file" name="profileImg" accept="image/*" id="profileImg" />
           </label>
           <br>
@@ -42,7 +42,7 @@
         <div class="alert alert-danger d-none" id="msg"></div>
 
         <div class="d-flex align-items-center">
-          <button type="submit" id="save" class="btn btn-primary me-5">Update</button>
+          <button type="submit" id="save" class="btn btn-primary m-0 mx-3" >Update</button>
         </div>
         <br>
       </div>
@@ -54,7 +54,7 @@
    if (window.history.replaceState) {
     window.history.replaceState(null, null, window.location.href);
   }
-  function checkPasswords() {
+    function checkPasswords() {
     const newpass = document.getElementById("newpass").value;
     const confirmpass = document.getElementById("cnfmpass").value;
     const msg = document.getElementById("msg");
@@ -63,9 +63,10 @@
         msg.classList.remove("d-none");
         msg.innerText = "New password and confirm password do not match";
         return false;
-    }
+    } 
     return true;
   }
+
 </script>
 </body>
 </html>

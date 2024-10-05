@@ -20,17 +20,7 @@ navitem.forEach(item => {
 
 
 //Dashboard page script----------------------------------------------------------------------
-// const msg = document.getElementById("msg");
-// function checkPasswords(event) {
-//     const newpass = document.getElementById("newpass").value;
-//     const confirmpass = document.getElementById("cnfmpass").value;
-
-//     if (newpass !== confirmpass || newpass === null) {
-//         event.preventDefault();
-//         msg.style.display = "block";
-//         msg.innerText = "New password and confirm password do not match";
-//     }
-// }
+// 
 
 //-------------------------------------------------------------------------------------------
 
