@@ -5,6 +5,7 @@
             <% if (posts.length === 0) { %>
                 <h3 style="text-align: center; margin: 10% auto;">No Posts Found, Try adding something...</h3>
             <% } %>
+
             <% for (const post of posts) { %>
                 <div class="card p-2 m-auto mt-4 shadow-sm" id="post_card" >
                     <img class="card-img-top" id="post_card_img" src="<%= post.img %>" alt="No image">
@@ -27,9 +28,20 @@
                     </div> 
                     <% } %>
                 </div>
-                
             <% } %>
         </div>
+    <div class="d-flex justify-content-evenly mt-3">
+  <% if (page > 1) { %>
+    <a title="previous page" href="/posts?page=<%= page - 1 %>">Previous Page</a>
+  <% } else { %>
+  <% } %>
+
+  <% if (hasNextPage) { %> 
+    <a title="next page" href="/posts?page=<%= page + 1 %>">Next Page</a>
+  <% } else { %>
+  <% } %>
+</div>
+
         <%- include("includes/footer.ejs") %>
         <script src="/script.js"></script>
     </body>

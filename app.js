@@ -76,26 +76,39 @@ app.post("/add", isAuthenticated, upload.single("image"), async (req, res) => {
   }
 });
 
-app.get(["/", "/home", "/posts"], (req, res) => {
-  const token = req.cookies.token
-  const query = `SELECT * FROM userposts  ORDER BY createdAt DESC`;
-  connection.query(query, (queryErr, queryResult) => {
+app.get(['/', '/home', '/posts'], (req, res) => {
+  const token = req.cookies.token;
+
+  const page = parseInt(req.query.page) || 1; 
+  const limit = 3; 
+  const offset = (page - 1) * limit;
+
+  const query = `SELECT * FROM userposts ORDER BY createdAt DESC LIMIT ? OFFSET ?`;
+
+  connection.query(query, [limit+1, offset], (queryErr, queryResult) => {
     if (queryErr) {
       console.error(queryErr);
-      return res.render("failure.ejs", { failure: queryErr.message });
+      return res.render('failure.ejs', { failure: queryErr.message });
     }
-    if (token) {
+    const hasNextPage = queryResult.length > limit; 
+    if (hasNextPage) queryResult.pop(); 
+
+     if(token) {
       jwt.verify(token, process.env.JWT_SECRET, (jwterr, jwtdecoded) => {
-        if(jwterr) res.render("posts",{posts:queryResult, user:null})
-        return res.render("posts", { posts: queryResult, user:jwtdecoded });
-      })
+        return res.render("posts", {
+          posts: queryResult,
+          user: jwterr ? null : jwtdecoded,
+          page,
+          hasNextPage
+        });
+      });
+    } else {
+      return res.render('posts', { posts: queryResult, user: null, page, hasNextPage });
     }
-    else {
-      return res.render("posts", { posts: queryResult, user: null });
-    }
- 
   });
 });
+
+
 app.get("/detail/:user",  (req, res) => {
   const token = req.cookies.token||null;
   const Id = parseInt(req.params.user, 10); 
