@@ -23,10 +23,8 @@ dotenv.config();
 const port = process.env.PORT || 3001;
 
 
-// config.js now exports the MySQL connection pool.
-// Do NOT call connection.connect() here.
+// config.js exports the MySQL connection pool.
 const connection = require("./config/config");
-
 
 const isAuthenticated = (req, res, next) => {
   const token = req.cookies.token;
